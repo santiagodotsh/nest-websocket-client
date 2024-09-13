@@ -8,13 +8,22 @@ export function connectToServer() {
 }
 
 function addListeners(socket: Socket) {
-  const serverStatusLabel = document.getElementById('server-status')!
+  const serverStatus = document.getElementById('server-status')!
+  const clientsUl = document.getElementById('clients-ul')!
 
   socket.on('connect', () => {
-    serverStatusLabel.innerHTML = 'connected'
+    serverStatus.innerHTML = 'connected'
   })
 
   socket.on('disconnect', () => {
-    serverStatusLabel.innerHTML = 'disconnected'
+    serverStatus.innerHTML = 'disconnected'
+  })
+
+  socket.on('clients-updated', (clientIds: string[]) => {
+    let clientsHtml = ''
+
+    clientIds.forEach(id => clientsHtml += `<li>${id}</li>`)
+
+    clientsUl.innerHTML = clientsHtml
   })
 }
