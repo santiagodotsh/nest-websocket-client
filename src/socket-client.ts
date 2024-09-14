@@ -5,14 +5,23 @@ interface MessageResponse {
   message: string
 }
 
-export function connectToServer() {
-  const manager =  new Manager('localhost:3000/socket.io/socket.io.js')
-  const socket = manager.socket('/')
+let socket: Socket
 
-  addListeners(socket)
+export function connectToServer(token: string) {
+  const manager =  new Manager('localhost:3000/socket.io/socket.io.js', {
+    extraHeaders: {
+      authentication: token
+    }
+  })
+  
+  socket?.removeAllListeners()
+
+  socket = manager.socket('/')
+  
+  addListeners()
 }
 
-function addListeners(socket: Socket) {
+function addListeners() {
   const serverStatus = document.querySelector<HTMLSpanElement>('#server-status')!
   const clientsUl = document.querySelector<HTMLUListElement>('#clients-ul')!
   const messageForm = document.querySelector<HTMLFormElement>('#message-form')!
